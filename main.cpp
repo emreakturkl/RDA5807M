@@ -19,7 +19,7 @@ int main(void)
   Serial.println("RDA5807M is Found.");
 
   channel(FREQ_FAV);
-
+  info_rda5807();
 #if RADIO_STATION
   for(float i = FREQ_MIN; i <= FREQ_MAX; i += 0.1)
   {

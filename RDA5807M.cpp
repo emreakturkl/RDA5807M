@@ -33,6 +33,7 @@ int8_t init_rda5807() {
 
   softreset(DISABLE);
   bass(ENABLE);
+  mono(ENABLE);
   volume(VOLUME_MAX);
   channel(FREQ);
 
@@ -73,6 +74,30 @@ int8_t writeL(const uint8_t *data, uint8_t len) {
     return 0;
   else
     return -1;
+}
+
+uint8_t read8() {
+  
+  uint8_t data = Wire.read();
+  return data;
+}
+
+uint16_t read16() {
+
+  uint16_t data = (Wire.read() << 8) | Wire.read();;  
+  return data;
+}
+
+void info_rda5807() {
+
+  uint16_t data[2] = {0, 0};
+
+  Wire.requestFrom((uint8_t)RDA5807M_I2C_S_ADDR, (uint8_t)(sizeof(uint16_t) * 2));
+  data[0] = read16();
+  data[1] = read16();
+
+  Serial.println(data[0], HEX);
+  Serial.println(data[1], HEX);
 }
 
 /*

@@ -1,6 +1,7 @@
 #ifndef RDA5807M
 #define RDA5807M
 
+#include <Arduino.h>
 #include <util/delay.h>
 #include <stdint.h>
 #include <Wire.h>
@@ -157,9 +158,12 @@ typedef struct FmRadio {
 } FmRadio;
 
 int8_t init_rda5807();
+void info_rda5807();
 int8_t write8(uint8_t addr, uint8_t data);
 int8_t write16(uint8_t addr, uint16_t data);
 int8_t writeL(const uint8_t *data, uint8_t len);
+uint8_t read8();
+uint16_t read16();
 
 // 0x02H Functions
 void dhiz(uint8_t flag);
@@ -194,6 +198,7 @@ void seekth(uint8_t threshold);
 void lnaportsel(uint8_t port);
 void lnaicsel(uint8_t current);
 void volume(uint16_t level);
+
 
 
 extern FmRadio RDA5807;
