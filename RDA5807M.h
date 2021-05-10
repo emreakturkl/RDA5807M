@@ -1,6 +1,7 @@
 #ifndef RDA5807M
 #define RDA5807M
 
+#include <avr/io.h>
 #include <stdint.h>
 #include <Wire.h>
 
@@ -102,7 +103,7 @@
 #define RDA5807M_FUNC_LNA_ICSEL_BIT_1    0x0010
 #define RDA5807M_FUNC_LNA_ICSEL_BIT_2    0x0020
 #define RDA5807M_FUNC_LNA_ICSEL_BIT_3    0x0030
-#define RDA5807M_FUNC_VOLUME             0x000B
+#define RDA5807M_FUNC_VOLUME             0x000F
 
 // 0x06H Functions (Bit Enable)
 #define RDA5807M_FUNC_RSVD_2             0x0000
@@ -142,7 +143,9 @@
 #define ENABLE  1
 
 #define VOLUME_MIN 0
-#define VOLUME_MAX 32
+#define VOLUME_MAX 15
+#define FREQ       88.0
+
 
 typedef struct FmRadio {
   uint16_t chipid;
@@ -154,7 +157,6 @@ typedef struct FmRadio {
   uint16_t blend;
   uint16_t freq;
 } FmRadio;
-
 
 int8_t init_rda5807();
 int8_t write8(uint8_t addr, uint8_t data);
