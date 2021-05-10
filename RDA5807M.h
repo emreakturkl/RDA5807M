@@ -91,8 +91,7 @@
 
 // 0x05H Functions (Bit Enable)
 #define RDA5807M_FUNC_INT_MODE           0x8000
-#define RDA5807M_FUNC_SEEK_MODE_0        0x0000
-#define RDA5807M_FUNC_SEEK_MODE_1        0x5000
+#define RDA5807M_FUNC_SEEK_MODE          0x4000
 #define RDA5807M_FUNC_RSVD_1             0x0000
 #define RDA5807M_FUNC_SEEKTH             0x0800
 #define RDA5807M_FUNC_LNA_PORT_SEL_0     0x0000
