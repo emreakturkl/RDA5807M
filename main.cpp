@@ -1,4 +1,3 @@
-#include <avr/io.h>
 #include <Arduino.h>
 #include "RDA5807M.h"
 
@@ -20,7 +19,7 @@ int main(void)
   Serial.println("RDA5807M is Found.");
 
   channel(FREQ_FAV);
-  
+
 #if RADIO_STATION
   for(float i = FREQ_MIN; i <= FREQ_MAX; i += 0.1)
   {

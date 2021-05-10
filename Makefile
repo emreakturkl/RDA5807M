@@ -69,7 +69,7 @@ $(OBJECT_DIR)${TARGET}.o: ${TARGET}.cpp
 	if ! [ -d "$(PATH_)/$(OBJECT_DIR)" ]; then mkdir $(OBJECT_DIR); fi;
 	${COMPILE+} ${INCLUDE_LIB} ${INCLUDE_PIN_STANDART} -I$(WIRE) -I$(SPI) -I$(SOFTWARE_SERIAL) -I$(EEPROM) -c $^ -o $@
 
-$(OBJECT_DIR)${DRIVER}.o: ${DRIVER}.cpp 
+$(OBJECT_DIR)${DRIVER}.o: ${DRIVER}.cpp
 	${COMPILE+} ${INCLUDE_LIB} ${INCLUDE_PIN_STANDART} -I$(WIRE) -c $^ -o $@
 
 libcore.a: ${ARDUINO_OBJS} ${EXTERNAL_OBJS}

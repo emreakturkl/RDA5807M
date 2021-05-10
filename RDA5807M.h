@@ -1,7 +1,7 @@
 #ifndef RDA5807M
 #define RDA5807M
 
-#include <avr/io.h>
+#include <util/delay.h>
 #include <stdint.h>
 #include <Wire.h>
 
@@ -145,7 +145,6 @@
 #define VOLUME_MIN 0
 #define VOLUME_MAX 15
 #define FREQ       88.0
-
 
 typedef struct FmRadio {
   uint16_t chipid;

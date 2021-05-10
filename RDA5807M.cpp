@@ -35,7 +35,7 @@ int8_t init_rda5807() {
   bass(ENABLE);
   volume(VOLUME_MAX);
   channel(FREQ);
-  
+
   return 0;
 }
 
@@ -470,4 +470,5 @@ void volume(uint16_t level) {
   RDA5807.volume &= (~RDA5807M_FUNC_VOLUME);
   RDA5807.volume |= level;
   write16(RDA5807M_REG_VOLUME, RDA5807.volume);
+  
 }
