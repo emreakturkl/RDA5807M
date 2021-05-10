@@ -455,6 +455,157 @@ void space(uint8_t s) {
 }
 
 /*
+  De-emphasis
+
+  0 = 75 μs; 1 = 50 μs
+*/
+void deemphasis(uint16_t flag) {
+
+  if (flag)
+    RDA5807.gpio |= RDA5807M_FUNC_DE;
+  else
+    RDA5807.gpio &= (~RDA5807M_FUNC_DE);
+  
+  write16(RDA5807M_REG_GPIO, RDA5807.gpio);
+  
+}
+
+/*
+  If 1, softmute enable
+*/
+void softmuteen(uint16_t flag) {
+
+  if (flag)
+    RDA5807.gpio |= RDA5807M_FUNC_SOFTMUTE_EN;
+  else
+    RDA5807.gpio &= (~RDA5807M_FUNC_SOFTMUTE_EN);
+  
+  write16(RDA5807M_REG_GPIO, RDA5807.gpio);
+  
+}
+
+/*
+  AFC disable
+
+  If 0, afc work;
+  If 1, afc disabled.
+*/
+void afcd(uint16_t flag) {
+
+  if (flag)
+    RDA5807.gpio |= RDA5807M_FUNC_AFCD;
+  else
+    RDA5807.gpio &= (~RDA5807M_FUNC_AFCD);
+  
+  write16(RDA5807M_REG_GPIO, RDA5807.gpio);
+  
+}
+
+/*
+  If 0, generate 5ms interrupt;
+  If 1, interrupt last until read reg0CH action
+  occurs.
+*/
+void intmode(uint16_t flag) {
+
+  if (flag)
+    RDA5807.volume |= RDA5807M_FUNC_INT_MODE;
+  else
+    RDA5807.volume &= (~RDA5807M_FUNC_INT_MODE);
+  
+  write16(RDA5807M_REG_VOLUME, RDA5807.volume);
+}
+
+/*
+  Default value is 00; When = 10, will add the
+  RSSI seek mode.
+*/
+void seekmode(uint16_t flag) {
+
+  if (flag)
+    RDA5807.volume |= RDA5807M_FUNC_SEEK_MODE;
+  else
+    RDA5807.volume &= 0xBFFF;
+  
+  write16(RDA5807M_REG_VOLUME, RDA5807.volume);
+}
+
+/*
+  Seek SNR threshold value
+  The default noise threshold is 71dB
+*/
+void seekth(uint16_t threshold) {
+  RDA5807.volume &= 0xF0FF;
+
+  RDA5807.volume |= (threshold << 8);
+  write16(RDA5807M_REG_VOLUME, RDA5807.volume);
+}
+
+/*
+  LNA input port selection bit:
+  00: no input
+  01: LNAN
+  10: LNAP
+  11: dual port input
+*/
+void lnaportsel(uint8_t port) {
+
+  RDA5807.volume &= (~RDA5807M_FUNC_LNA_PORT_SEL_3);
+  switch(port)
+  {
+    case 0:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_PORT_SEL_0;
+      break;
+    case 1:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_PORT_SEL_1;
+      break;
+    case 2:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_PORT_SEL_2;
+      break;
+    case 3:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_PORT_SEL_3;
+      break;
+    default:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_PORT_SEL_1;
+      break;
+  }
+
+  write16(RDA5807M_REG_VOLUME, RDA5807.volume);
+}
+
+/*
+  Lna working current bit:
+  00=1.8mA
+  01=2.1mA
+  10=2.5mA
+  11=3.0mA
+*/
+void lnaicsel(uint8_t current) {
+
+  RDA5807.volume &= (~RDA5807M_FUNC_LNA_ICSEL_BIT_3);
+  switch(current)
+  {
+    case 0:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_ICSEL_BIT_0;
+      break;
+    case 1:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_ICSEL_BIT_1;
+      break;
+    case 2:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_ICSEL_BIT_2;
+      break;
+    case 3:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_ICSEL_BIT_3;
+      break;
+    default:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_ICSEL_BIT_0;
+      break;
+  }
+
+  write16(RDA5807M_REG_VOLUME, RDA5807.volume);
+}
+
+/*
   DAC Gain Control Bits (Volume)
 
   0000 = min; 1111 = max
@@ -470,5 +621,5 @@ void volume(uint16_t level) {
   RDA5807.volume &= (~RDA5807M_FUNC_VOLUME);
   RDA5807.volume |= level;
   write16(RDA5807M_REG_VOLUME, RDA5807.volume);
-  
+
 }

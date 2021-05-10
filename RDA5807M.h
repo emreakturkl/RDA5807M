@@ -91,8 +91,7 @@
 
 // 0x05H Functions (Bit Enable)
 #define RDA5807M_FUNC_INT_MODE           0x8000
-#define RDA5807M_FUNC_SEEK_MODE_0        0x0000
-#define RDA5807M_FUNC_SEEK_MODE_1        0x5000
+#define RDA5807M_FUNC_SEEK_MODE          0x4000
 #define RDA5807M_FUNC_RSVD_1             0x0000
 #define RDA5807M_FUNC_SEEKTH             0x0800
 #define RDA5807M_FUNC_LNA_PORT_SEL_0     0x0000
@@ -183,8 +182,19 @@ void tune(uint8_t flag);
 void band(uint8_t b);
 void space(uint8_t s);
 
+// 0x04H Functions
+void deemphasis(uint8_t flag);
+void softmuteen(uint8_t flag);
+void afcd(uint8_t flag);
+
 // 0x05H Functions
+void intmode(uint8_t flag);
+void seekmode(uint8_t flag);
+void seekth(uint8_t threshold);
+void lnaportsel(uint8_t port);
+void lnaicsel(uint8_t current);
 void volume(uint16_t level);
+
 
 extern FmRadio RDA5807;
 
