@@ -32,10 +32,11 @@ int8_t init_rda5807() {
   writeL((uint8_t *)data, len);
 
   softreset(DISABLE);
-  bass(ENABLE);
-  mono(ENABLE);
+  bass(DISABLE);
+  mono(DISABLE);
   volume(VOLUME_MAX);
   channel(FREQ);
+  
 
   return 0;
 }
@@ -484,7 +485,7 @@ void space(uint8_t s) {
 
   0 = 75 μs; 1 = 50 μs
 */
-void deemphasis(uint16_t flag) {
+void deemphasis(uint8_t flag) {
 
   if (flag)
     RDA5807.gpio |= RDA5807M_FUNC_DE;
@@ -498,7 +499,7 @@ void deemphasis(uint16_t flag) {
 /*
   If 1, softmute enable
 */
-void softmuteen(uint16_t flag) {
+void softmuteen(uint8_t flag) {
 
   if (flag)
     RDA5807.gpio |= RDA5807M_FUNC_SOFTMUTE_EN;
@@ -515,7 +516,7 @@ void softmuteen(uint16_t flag) {
   If 0, afc work;
   If 1, afc disabled.
 */
-void afcd(uint16_t flag) {
+void afcd(uint8_t flag) {
 
   if (flag)
     RDA5807.gpio |= RDA5807M_FUNC_AFCD;
@@ -531,7 +532,7 @@ void afcd(uint16_t flag) {
   If 1, interrupt last until read reg0CH action
   occurs.
 */
-void intmode(uint16_t flag) {
+void intmode(uint8_t flag) {
 
   if (flag)
     RDA5807.volume |= RDA5807M_FUNC_INT_MODE;
@@ -545,7 +546,7 @@ void intmode(uint16_t flag) {
   Default value is 00; When = 10, will add the
   RSSI seek mode.
 */
-void seekmode(uint16_t flag) {
+void seekmode(uint8_t flag) {
 
   if (flag)
     RDA5807.volume |= RDA5807M_FUNC_SEEK_MODE;
@@ -559,7 +560,7 @@ void seekmode(uint16_t flag) {
   Seek SNR threshold value
   The default noise threshold is 71dB
 */
-void seekth(uint16_t threshold) {
+void seekth(uint8_t threshold) {
   RDA5807.volume &= 0xF0FF;
 
   RDA5807.volume |= (threshold << 8);

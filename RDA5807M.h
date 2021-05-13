@@ -199,8 +199,6 @@ void lnaportsel(uint8_t port);
 void lnaicsel(uint8_t current);
 void volume(uint16_t level);
 
-
-
 extern FmRadio RDA5807;
 
 #endif /* RDA5807M */
