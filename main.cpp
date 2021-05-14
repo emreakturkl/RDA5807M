@@ -5,7 +5,7 @@
 
 #define FREQ_MIN 87.0
 #define FREQ_MAX 108.0
-#define FREQ_FAV 95.5
+#define FREQ_FAV 106.2
 
 #define RADIO_STATION 0
 
@@ -20,6 +20,7 @@ int main(void)
 
   channel(FREQ_FAV);
   info_rda5807();
+  
 #if RADIO_STATION
   for(float i = FREQ_MIN; i <= FREQ_MAX; i += 0.1)
   {
