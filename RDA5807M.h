@@ -144,7 +144,7 @@
 
 #define VOLUME_MIN 0
 #define VOLUME_MAX 15
-#define FREQ       88.0
+#define FREQ       106.2
 
 typedef struct FmRadio {
   uint16_t chipid;

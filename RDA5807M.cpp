@@ -1,4 +1,4 @@
- #include "RDA5807M.h"
+#include "RDA5807M.h"
 
 FmRadio RDA5807;
 
@@ -32,11 +32,8 @@ int8_t init_rda5807() {
   writeL((uint8_t *)data, len);
 
   softreset(DISABLE);
-  bass(DISABLE);
-  mono(DISABLE);
   volume(VOLUME_MAX);
   channel(FREQ);
-  
 
   return 0;
 }
@@ -85,7 +82,7 @@ uint8_t read8() {
 
 uint16_t read16() {
 
-  uint16_t data = (Wire.read() << 8) | Wire.read();;  
+  uint16_t data = (Wire.read() << 8) | Wire.read();
   return data;
 }
 
@@ -353,36 +350,36 @@ void channel(float freq) {
   if ((four >> 2) == 0)
   {
     if ( (four & 0x03) == 0 )
-      val = (10 * freq - 870) / 1;
+      val = (10 * freq - 870) * 1;
     else if ( (four & 0x03) == 1 )
-      val = (10 * freq - 870) / 0.5;
+      val = (10 * freq - 870) * 0.5;
     else if ( (four & 0x03) == 2 )
-      val = (10 * freq - 870) / 2;
+      val = (10 * freq - 870) * 2;
     else
-      val = (10 * freq - 870) / 0.25;
+      val = (10 * freq - 870) * 2.5;
 
   }
   else if ((four >> 2) == 3)
   {
     if ( (four & 0x03) == 0 )
-      val = (10 * freq - 650) / 1;
+      val = (10 * freq - 650) * 1;
     else if ( (four & 0x03) == 1 )
-      val = (10 * freq - 650) / 0.5;
+      val = (10 * freq - 650) * 0.5;
     else if ( (four & 0x03) == 2 )
-      val = (10 * freq - 650) / 2;
+      val = (10 * freq - 650) * 2;
     else
-      val = (10 * freq - 650) / 0.25;
+      val = (10 * freq - 650) * 2.5;
   }
   else
   {
     if ( (four & 0x03) == 0 )
-      val = (freq - 760) / 1;
+      val = (10 * freq - 760) * 1;
     else if ( (four & 0x03) == 1 )
-      val = (freq - 760) / 0.5;
+      val = (10 * freq - 760) * 0.5;
     else if ( (four & 0x03) == 2 )
-      val = (freq - 760) / 2;
+      val = (10 * freq - 760) * 2;
     else
-      val = (freq - 760) / 0.25;
+      val = (10 *freq - 760) * 2.5;
   }
 
   RDA5807.tune = (val << 6) | (RDA5807.tune & 0x003F);
@@ -563,7 +560,7 @@ void seekmode(uint8_t flag) {
 void seekth(uint8_t threshold) {
   RDA5807.volume &= 0xF0FF;
 
-  RDA5807.volume |= (threshold << 8);
+  RDA5807.volume |= (uint16_t)(threshold << 8);
   write16(RDA5807M_REG_VOLUME, RDA5807.volume);
 }
 
