@@ -1,4 +1,4 @@
- #include "RDA5807M.h"
+#include "RDA5807M.h"
 
 FmRadio RDA5807;
 
@@ -10,7 +10,7 @@ int8_t init_rda5807() {
     return -1;
 
   RDA5807.chipid = RDA5807M_FUNC_CHIPID;
-  RDA5807.config = RDA5807M_FUNC_DMIZ | RDA5807M_FUNC_DMUTE | RDA5807M_FUNC_SOFTRESET | RDA5807M_FUNC_ENABLE;
+  RDA5807.config = RDA5807M_FUNC_DMIZ | RDA5807M_FUNC_DMUTE | RDA5807M_FUNC_SOFTRESET | RDA5807M_FUNC_ENABLE | RDA5807M_FUNC_RDSEN;
   RDA5807.tune   = RDA5807M_FUNC_CHANNEL | RDA5807M_FUNC_TUNE;
   RDA5807.gpio   = RDA5807M_FUNC_RDS_FIFO_CLR;
   RDA5807.volume = RDA5807M_FUNC_INT_MODE | RDA5807M_FUNC_SEEKTH | RDA5807M_FUNC_LNA_PORT_SEL_2 | RDA5807M_FUNC_VOLUME;
@@ -32,7 +32,6 @@ int8_t init_rda5807() {
   writeL((uint8_t *)data, len);
 
   softreset(DISABLE);
-  bass(ENABLE);
   volume(VOLUME_MAX);
   channel(FREQ);
 
@@ -73,6 +72,30 @@ int8_t writeL(const uint8_t *data, uint8_t len) {
     return 0;
   else
     return -1;
+}
+
+uint8_t read8() {
+  
+  uint8_t data = Wire.read();
+  return data;
+}
+
+uint16_t read16() {
+
+  uint16_t data = (Wire.read() << 8) | Wire.read();
+  return data;
+}
+
+uint32_t info_rda5807() {
+
+  uint16_t data[2] = {0, 0};
+
+  Wire.requestFrom((uint8_t)RDA5807M_I2C_S_ADDR, (uint8_t)(sizeof(uint16_t) * 2));
+  data[0] = read16();
+  data[1] = read16();
+
+  return ((uint32_t)data[0] << 16) | data[1]; 
+
 }
 
 /*
@@ -327,36 +350,36 @@ void channel(float freq) {
   if ((four >> 2) == 0)
   {
     if ( (four & 0x03) == 0 )
-      val = (10 * freq - 870) / 1;
+      val = (10 * freq - 870) * 1;
     else if ( (four & 0x03) == 1 )
-      val = (10 * freq - 870) / 0.5;
+      val = (10 * freq - 870) * 0.5;
     else if ( (four & 0x03) == 2 )
-      val = (10 * freq - 870) / 2;
+      val = (10 * freq - 870) * 2;
     else
-      val = (10 * freq - 870) / 0.25;
+      val = (10 * freq - 870) * 2.5;
 
   }
   else if ((four >> 2) == 3)
   {
     if ( (four & 0x03) == 0 )
-      val = (10 * freq - 650) / 1;
+      val = (10 * freq - 650) * 1;
     else if ( (four & 0x03) == 1 )
-      val = (10 * freq - 650) / 0.5;
+      val = (10 * freq - 650) * 0.5;
     else if ( (four & 0x03) == 2 )
-      val = (10 * freq - 650) / 2;
+      val = (10 * freq - 650) * 2;
     else
-      val = (10 * freq - 650) / 0.25;
+      val = (10 * freq - 650) * 2.5;
   }
   else
   {
     if ( (four & 0x03) == 0 )
-      val = (freq - 760) / 1;
+      val = (10 * freq - 760) * 1;
     else if ( (four & 0x03) == 1 )
-      val = (freq - 760) / 0.5;
+      val = (10 * freq - 760) * 0.5;
     else if ( (four & 0x03) == 2 )
-      val = (freq - 760) / 2;
+      val = (10 * freq - 760) * 2;
     else
-      val = (freq - 760) / 0.25;
+      val = (10 *freq - 760) * 2.5;
   }
 
   RDA5807.tune = (val << 6) | (RDA5807.tune & 0x003F);
@@ -455,6 +478,157 @@ void space(uint8_t s) {
 }
 
 /*
+  De-emphasis
+
+  0 = 75 μs; 1 = 50 μs
+*/
+void deemphasis(uint8_t flag) {
+
+  if (flag)
+    RDA5807.gpio |= RDA5807M_FUNC_DE;
+  else
+    RDA5807.gpio &= (~RDA5807M_FUNC_DE);
+  
+  write16(RDA5807M_REG_GPIO, RDA5807.gpio);
+  
+}
+
+/*
+  If 1, softmute enable
+*/
+void softmuteen(uint8_t flag) {
+
+  if (flag)
+    RDA5807.gpio |= RDA5807M_FUNC_SOFTMUTE_EN;
+  else
+    RDA5807.gpio &= (~RDA5807M_FUNC_SOFTMUTE_EN);
+  
+  write16(RDA5807M_REG_GPIO, RDA5807.gpio);
+  
+}
+
+/*
+  AFC disable
+
+  If 0, afc work;
+  If 1, afc disabled.
+*/
+void afcd(uint8_t flag) {
+
+  if (flag)
+    RDA5807.gpio |= RDA5807M_FUNC_AFCD;
+  else
+    RDA5807.gpio &= (~RDA5807M_FUNC_AFCD);
+  
+  write16(RDA5807M_REG_GPIO, RDA5807.gpio);
+  
+}
+
+/*
+  If 0, generate 5ms interrupt;
+  If 1, interrupt last until read reg0CH action
+  occurs.
+*/
+void intmode(uint8_t flag) {
+
+  if (flag)
+    RDA5807.volume |= RDA5807M_FUNC_INT_MODE;
+  else
+    RDA5807.volume &= (~RDA5807M_FUNC_INT_MODE);
+  
+  write16(RDA5807M_REG_VOLUME, RDA5807.volume);
+}
+
+/*
+  Default value is 00; When = 10, will add the
+  RSSI seek mode.
+*/
+void seekmode(uint8_t flag) {
+
+  if (flag)
+    RDA5807.volume |= RDA5807M_FUNC_SEEK_MODE;
+  else
+    RDA5807.volume &= 0xBFFF;
+  
+  write16(RDA5807M_REG_VOLUME, RDA5807.volume);
+}
+
+/*
+  Seek SNR threshold value
+  The default noise threshold is 71dB
+*/
+void seekth(uint8_t threshold) {
+  RDA5807.volume &= 0xF0FF;
+
+  RDA5807.volume |= (uint16_t)(threshold << 8);
+  write16(RDA5807M_REG_VOLUME, RDA5807.volume);
+}
+
+/*
+  LNA input port selection bit:
+  00: no input
+  01: LNAN
+  10: LNAP
+  11: dual port input
+*/
+void lnaportsel(uint8_t port) {
+
+  RDA5807.volume &= (~RDA5807M_FUNC_LNA_PORT_SEL_3);
+  switch(port)
+  {
+    case 0:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_PORT_SEL_0;
+      break;
+    case 1:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_PORT_SEL_1;
+      break;
+    case 2:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_PORT_SEL_2;
+      break;
+    case 3:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_PORT_SEL_3;
+      break;
+    default:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_PORT_SEL_1;
+      break;
+  }
+
+  write16(RDA5807M_REG_VOLUME, RDA5807.volume);
+}
+
+/*
+  Lna working current bit:
+  00=1.8mA
+  01=2.1mA
+  10=2.5mA
+  11=3.0mA
+*/
+void lnaicsel(uint8_t current) {
+
+  RDA5807.volume &= (~RDA5807M_FUNC_LNA_ICSEL_BIT_3);
+  switch(current)
+  {
+    case 0:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_ICSEL_BIT_0;
+      break;
+    case 1:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_ICSEL_BIT_1;
+      break;
+    case 2:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_ICSEL_BIT_2;
+      break;
+    case 3:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_ICSEL_BIT_3;
+      break;
+    default:
+      RDA5807.tune |= RDA5807M_FUNC_LNA_ICSEL_BIT_0;
+      break;
+  }
+
+  write16(RDA5807M_REG_VOLUME, RDA5807.volume);
+}
+
+/*
   DAC Gain Control Bits (Volume)
 
   0000 = min; 1111 = max
@@ -470,5 +644,5 @@ void volume(uint16_t level) {
   RDA5807.volume &= (~RDA5807M_FUNC_VOLUME);
   RDA5807.volume |= level;
   write16(RDA5807M_REG_VOLUME, RDA5807.volume);
-  
+
 }

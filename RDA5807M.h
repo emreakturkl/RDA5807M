@@ -143,7 +143,7 @@
 
 #define VOLUME_MIN 0
 #define VOLUME_MAX 15
-#define FREQ       88.0
+#define FREQ       106.2
 
 typedef struct FmRadio {
   uint16_t chipid;
@@ -157,9 +157,12 @@ typedef struct FmRadio {
 } FmRadio;
 
 int8_t init_rda5807();
+uint32_t info_rda5807();
 int8_t write8(uint8_t addr, uint8_t data);
 int8_t write16(uint8_t addr, uint16_t data);
 int8_t writeL(const uint8_t *data, uint8_t len);
+uint8_t read8();
+uint16_t read16();
 
 // 0x02H Functions
 void dhiz(uint8_t flag);
@@ -182,7 +185,17 @@ void tune(uint8_t flag);
 void band(uint8_t b);
 void space(uint8_t s);
 
+// 0x04H Functions
+void deemphasis(uint8_t flag);
+void softmuteen(uint8_t flag);
+void afcd(uint8_t flag);
+
 // 0x05H Functions
+void intmode(uint8_t flag);
+void seekmode(uint8_t flag);
+void seekth(uint8_t threshold);
+void lnaportsel(uint8_t port);
+void lnaicsel(uint8_t current);
 void volume(uint16_t level);
 
 extern FmRadio RDA5807;

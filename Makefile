@@ -55,6 +55,7 @@ ARDUINO_OBJS = ${patsubst $(ARDUINO_CORE_DIR)%.c, ${OBJECT_DIR}%.c.o, $(wildcard
 
 #$(info $(x))
 
+
 $(BIN)${TARGET}.hex: $(BIN)${TARGET}.elf
 	rm -f $(BIN)${TARGET}.hex
 	avr-objcopy -j .eeprom --set-section-flags=.eeprom=alloc,load --no-change-warnings --change-section-lma .eeprom=0 -O ihex $^ $(BIN)${TARGET}.eep
