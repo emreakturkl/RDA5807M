@@ -10,7 +10,7 @@ int8_t init_rda5807() {
     return -1;
 
   RDA5807.chipid = RDA5807M_FUNC_CHIPID;
-  RDA5807.config = RDA5807M_FUNC_DMIZ | RDA5807M_FUNC_DMUTE | RDA5807M_FUNC_SOFTRESET | RDA5807M_FUNC_ENABLE;
+  RDA5807.config = RDA5807M_FUNC_DMIZ | RDA5807M_FUNC_DMUTE | RDA5807M_FUNC_SOFTRESET | RDA5807M_FUNC_ENABLE | RDA5807M_FUNC_RDSEN;
   RDA5807.tune   = RDA5807M_FUNC_CHANNEL | RDA5807M_FUNC_TUNE;
   RDA5807.gpio   = RDA5807M_FUNC_RDS_FIFO_CLR;
   RDA5807.volume = RDA5807M_FUNC_INT_MODE | RDA5807M_FUNC_SEEKTH | RDA5807M_FUNC_LNA_PORT_SEL_2 | RDA5807M_FUNC_VOLUME;
@@ -86,7 +86,7 @@ uint16_t read16() {
   return data;
 }
 
-void info_rda5807() {
+uint32_t info_rda5807() {
 
   uint16_t data[2] = {0, 0};
 
@@ -94,8 +94,8 @@ void info_rda5807() {
   data[0] = read16();
   data[1] = read16();
 
-  Serial.println(data[0], HEX);
-  Serial.println(data[1], HEX);
+  return ((uint32_t)data[0] << 16) | data[1]; 
+
 }
 
 /*
