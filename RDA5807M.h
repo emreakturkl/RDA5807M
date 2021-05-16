@@ -145,7 +145,7 @@
 #define VOLUME_MAX 15
 #define FREQ       106.2
 
-typedef struct FmRadio {
+struct FmRadio {
   uint16_t chipid;
   uint16_t config;
   uint16_t tune;
@@ -154,7 +154,7 @@ typedef struct FmRadio {
   uint16_t i2s;
   uint16_t blend;
   uint16_t freq;
-} FmRadio;
+};
 
 int8_t init_rda5807();
 uint32_t info_rda5807();
@@ -198,6 +198,6 @@ void lnaportsel(uint8_t port);
 void lnaicsel(uint8_t current);
 void volume(uint16_t level);
 
-extern FmRadio RDA5807;
+extern struct FmRadio RDA5807;
 
 #endif /* RDA5807M */
