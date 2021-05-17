@@ -4,11 +4,11 @@
 #define PRINT(x) Serial.print(x)
 #define PRINTLN(x) Serial.println(x)
 
-#define MIN_FREQ 87.0
-#define MAX_FREQ 108.0
-#define FAV_FREQ 106.2
+#define FREQ_MIN 87.0
+#define FREQ_MAX 108.0
+#define FREQ_FAV 106.2
 
-#define DEBUG 0
+#define DEBUG 1
 #define RADIO_STATION 0
 
 int main(void)
@@ -20,7 +20,7 @@ int main(void)
     PRINTLN("Device Not Found.");
   PRINTLN("RDA5807M is Found.");
 
-  channel(FAV_FREQ);
+  channel(FREQ_FAV);
 
 #if DEBUG
   uint16_t info[2];
@@ -45,7 +45,7 @@ int main(void)
 #endif
 
 #if RADIO_STATION
-  for(float i = MIN_FREQ; i <= MAX_FREQ; i += 0.1)
+  for(float i = FREQ_MIN; i <= FREQ_MAX; i += 0.1)
   {
     channel(i);
     PRINT("Channel: ");  
