@@ -91,8 +91,8 @@ uint32_t info_rda5807() {
   uint16_t data[2] = {0, 0};
 
   Wire.requestFrom((uint8_t)RDA5807M_I2C_S_ADDR, (uint8_t)(sizeof(uint16_t) * 2));
-  data[0] = read16();
-  data[1] = read16();
+  data[0] = read16(); // 0x0A
+  data[1] = read16(); // 0x0B 
 
   return ((uint32_t)data[0] << 16) | data[1]; 
 
